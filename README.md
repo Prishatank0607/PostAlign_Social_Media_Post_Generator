@@ -30,7 +30,7 @@ PostAlign processes raw posts and enhances them by enriching content with struct
 **New Techniques Learned**
 
 - Implementing NLP techniques for text enhancement and tone adaptation.
-- Integrating Groq API and LangChain for seamless AI-based content generation.
+- Integrating Groq API, NewsAPI and LangChain for seamless AI-based content generation.
 - Developing a lightweight and responsive frontend using Streamlit.
 
 **Insights Generation**
@@ -62,7 +62,7 @@ PostAlign processes raw posts and enhances them by enriching content with struct
 **Dependencies**
 
 - Python libraries: pandas, NumPy, Streamlit
-- AI model: Llama 3.2 via Groq API
+- AI model: Llama 3.2 via Groq API and NewsAPI
 - Additional tools: LangChain for prompt processing
 
 **Dataset Source**
