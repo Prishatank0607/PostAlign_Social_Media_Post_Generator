@@ -1,5 +1,6 @@
 from llm_helper import llm
 from few_shot import FewShotPosts
+from trending_helper import fetch_trending_topics
 
 few_shot = FewShotPosts()
 
@@ -48,6 +49,16 @@ def get_prompt(length, language, tag, tone):
 
     return prompt
 
+def generate_post_with_trend(user_topic=None, tone="neutral", length="medium", language="English"):
+    """
+    Generates a post based on user-specified topic or a trending topic.
+    """
+    topics = fetch_trending_topics()  # Get trending topics
+    chosen_topic = user_topic if user_topic else topics[0]  # Use user topic if provided, else first trending topic
+
+    print(f"Generating post for topic: {chosen_topic}")  # Debugging
+
+    return generate_post(chosen_topic, tone, length, language)
 
 if __name__ == "__main__":
     print(generate_post("Medium", "English", "Mental Health", "Professional"))
