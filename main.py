@@ -1,8 +1,17 @@
 import streamlit as st
 from few_shot import FewShotPosts
 from post_generator import generate_post
+from post_generator import generate_post_with_trend
+from trending_helper import fetch_trending_topics
 
 st.set_page_config(page_title="PostAlign", layout="wide")
+
+# Fetch trending topics
+trending_topics = fetch_trending_topics()
+
+st.sidebar.title("🔥 Trending Topics")
+for topic in trending_topics:
+    st.sidebar.write(f"- {topic}")
 
 # Custom CSS for styling
 st.markdown("""
@@ -110,7 +119,7 @@ st.markdown("""
     <div class='nav-bar'>
         <a href='#home'>🏠 Home</a>
         <a href='#aboutus'>📂 About Us</a>
-        <a href='#postus'>🛠 Post Generator</a>
+        <a href='#postus'>📝 Post Generator</a>
         <a href='#contactus'>📞 Contact Us</a>
     </div>
 """, unsafe_allow_html=True)
@@ -131,6 +140,7 @@ st.markdown("""
         <a href="#aboutus">Let's Go!</a>
     </div>
 """, unsafe_allow_html=True)
+st.markdown("<br><br>", unsafe_allow_html=True)
 
 # About Us Section (anchor id = "aboutus")
 st.markdown("""
@@ -148,44 +158,62 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+st.markdown("<br><br>", unsafe_allow_html=True)
 
 # Post Generator Section (anchor id = "postus")
 st.markdown("""
     <div id="postus">
-        <h4>Generate you post here!</h4>
+        <h4>📝 Generate Your Post</h4>
         <p>
             Create and customize your post effortlessly!
         </p>
     </div>
 """, unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
-# Options for length, language, tone, etc.
-length_options = ["Short", "Medium", "Long"]
-language_options = ["English", "Hindi", "Hinglish", "Spanish", "French", "Arabic", "Urdu", "Bengali", "Portuguese", "Russian"]
-tone_options = ["Professional", "Casual", "Humorous", "Inspirational", "Neutral"]
+# **Topic Selection Method**
+st.markdown("##### **📌 Select How You Want to Choose a Topic**")
+topic_selection = st.radio(
+    "",
+    ["🔥 Trending Topics", "✍️ Manual Topic Selection", "📌 Select from Given Tags"],
+    key="topic_source"
+)
+st.markdown("<br><br>", unsafe_allow_html=True)
 
-# Layout using four columns to bring all selectboxes in one line
-col1, col2, col3, col4 = st.columns(4)
+# **Topic Selection Based on Choice**
+selected_topic = None
+if topic_selection == "🔥 Trending Topics":
+    st.markdown("##### **🔥 Generate post on Trending Topics**")
+    selected_topic = st.selectbox("Select a Trending Topic:", options=trending_topics, key="trending_topic")
 
-fs = FewShotPosts()
-tags = fs.get_tags()
+elif topic_selection == "✍️ Manual Topic Selection":
+    st.markdown("##### **✍️ Enter Your Custom Topic**")
+    selected_topic = st.text_input("Enter Your Topic:", placeholder="Type your topic here...", key="custom_topic")
+
+elif topic_selection == "📌 Select from Given Tags":
+    st.markdown("##### **📌 Choose from Suggested Tags**")
+    fs = FewShotPosts()
+    tags = fs.get_tags()
+    selected_topic = st.selectbox("Select a Topic:", options=tags, key="tag_selection")
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# **Common Options for Post Customization**
+st.markdown("##### **⚙️ Customize Your Post**")
+col1, col2, col3 = st.columns(3)
 
 with col1:
-    selected_tag = st.selectbox("Topic", options=tags)
+    selected_length = st.selectbox("Length", options=["Short", "Medium", "Long"], key="length_selection")
 with col2:
-    selected_length = st.selectbox("Length", options=length_options)
+    selected_language = st.selectbox("Language", options=["English", "Hindi", "Hinglish", "Spanish", "French", "Arabic", "Urdu", "Bengali", "Portuguese", "Russian"], key="language_selection")
 with col3:
-    selected_language = st.selectbox("Language", options=language_options)
-with col4:
-    selected_tone = st.selectbox("Tone", options=tone_options)
+    selected_tone = st.selectbox("Tone", options=["Professional", "Casual", "Humorous", "Inspirational", "Neutral"], key="tone_selection")
 
-
-if st.button("🚀 Generate Post", key="generate", help="Click to generate a post based on selected options"):
-    post = generate_post(selected_length, selected_language, selected_tag, selected_tone)
+# **Post Generation Button**
+if selected_topic and st.button("🚀 Generate Post"):
+    post = generate_post(selected_length, selected_language, selected_topic, selected_tone)
     st.success("✅ Your AI-generated post:")
     st.write(post)
 
-st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("""
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -208,7 +236,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-if st.button("Send", key="send", help="Click to send your query"):
+if st.button("📩 Send Query", key="send", help="Click to send your query"):
         st.success("Your query has been sent!")
+
 
 
