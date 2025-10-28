@@ -1,9 +1,16 @@
 pip>=25.3
+setuptools>=68.0
+wheel>=0.43.0
+
 streamlit==1.35.0
 langchain==0.2.14
 langchain-core==0.2.24
 langchain-community==0.2.6
 langchain-groq==0.1.4
+
 pandas==2.2.2
 pydantic==2.7.4
 pydantic-core==2.18.4
+
+requests==2.31.0
+numpy==1.26.4
